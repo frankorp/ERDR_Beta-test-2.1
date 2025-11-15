@@ -275,13 +275,13 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .security-notice {
-            background: rgba(220, 38, 38, 0.1);
-            border: 1px solid var(--danger);
+        .test-credentials {
+            background: rgba(30, 64, 175, 0.2);
+            border: 1px solid var(--primary);
             border-radius: 10px;
             padding: 15px;
             margin-top: 20px;
-            text-align: center;
+            font-size: 0.8em;
         }
 
         @media (max-width: 768px) {
@@ -558,9 +558,11 @@
                     <button class="btn btn-primary" onclick="login()" style="flex: 2;">Увійти</button>
                 </div>
                 
-                <div class="security-notice">
-                    <strong>🔒 Система безпеки</strong>
-                    <p style="margin-top: 5px; font-size: 0.9em;">Для доступу зверніться до адміністратора системи</p>
+                <div class="test-credentials">
+                    <h4>Тестові доступы для перевірки:</h4>
+                    <p><strong>ГУНП:</strong> gunp_admin / Gunp_Admin_2024!Secure</p>
+                    <p><strong>СБУ:</strong> sbu_admin / Sbu_Admin_2024!Secure</p>
+                    <p><strong>Прокуратура:</strong> prosecutor_admin / Prosecutor_Admin_2024!Secure</p>
                 </div>
             </div>
         </div>
@@ -643,11 +645,38 @@
             }
         };
 
-        // 🔐 USERS DATABASE - ТЕПЕР ПОРОЖНІЙ
+        // 🔐 USERS DATABASE - 24 УНІКАЛЬНИХ ПАРОЛІ
         const USERS = {
-            gunp: [],
-            sbu: [],
-            prosecutor: []
+            gunp: [
+                { username: "gunp_admin", password: "Gunp_Admin_2024!Secure", name: "Коваленко І.П.", position: "Головний адміністратор ГУНП" },
+                { username: "gunp_director", password: "Gunp_Director_2024!", name: "Петренко О.В.", position: "Начальник управління" },
+                { username: "gunp_deputy", password: "Gunp_Deputy_2024!", name: "Шевченко М.І.", position: "Заступник начальника" },
+                { username: "gunp_senior", password: "Gunp_Senior_Invest_2024!", name: "Бондаренко С.П.", position: "Старший слідчий" },
+                { username: "gunp_invest", password: "Gunp_Investigator_2024!", name: "Сидоренко В.П.", position: "Слідчий" },
+                { username: "gunp_oper", password: "Gunp_Operative_2024!", name: "Кравченко А.М.", position: "Оперативник" },
+                { username: "gunp_analyst", password: "Gunp_Analyst_2024!", name: "Павленко І.В.", position: "Аналітик" },
+                { username: "gunp_tech", password: "Gunp_Tech_2024!", name: "Ткачук Р.О.", position: "Технічний спеціаліст" }
+            ],
+            sbu: [
+                { username: "sbu_admin", password: "Sbu_Admin_2024!Secure", name: "Мельник А.В.", position: "Головний адміністратор СБУ" },
+                { username: "sbu_counterintel", password: "Sbu_CounterIntel_2024!", name: "Ковальчук С.М.", position: "Начальник контррозвідки" },
+                { username: "sbu_senior", password: "Sbu_Senior_Op_2024!", name: "Ткаченко І.П.", position: "Старший оперуповноважений" },
+                { username: "sbu_oper", password: "Sbu_Operative_2024!", name: "Лисенко О.Р.", position: "Оперуповноважений" },
+                { username: "sbu_cyber", password: "Sbu_Cyber_2024!", name: "Шевчук М.С.", position: "Кіберспеціаліст" },
+                { username: "sbu_analyst", password: "Sbu_Intel_Analyst_2024!", name: "Білий В.П.", position: "Аналітик розвідки" },
+                { username: "sbu_security", password: "Sbu_Security_2024!", name: "Чорний О.І.", position: "Спеціаліст безпеки" },
+                { username: "sbu_tech", password: "Sbu_Tech_2024!", name: "Зеленський П.М.", position: "Технічний експерт" }
+            ],
+            prosecutor: [
+                { username: "prosecutor_admin", password: "Prosecutor_Admin_2024!Secure", name: "Віскар М.М.", position: "Головний адміністратор Прокуратури" },
+                { username: "prosecutor_general", password: "Prosecutor_General_2024!", name: "Кулебяка А.А.", position: "Генеральний прокурор" },
+                { username: "prosecutor_deputy", password: "Prosecutor_Deputy_2024!", name: "Маркієнко М.С.", position: "Заступник прокурора" },
+                { username: "prosecutor_senior", password: "Prosecutor_Senior_2024!", name: "Шмелев А.Є.", position: "Старший прокурор" },
+                { username: "prosecutor_dept", password: "Prosecutor_Dept_2024!", name: "Петров К.О.", position: "Прокурор відділу" },
+                { username: "prosecutor_assist", password: "Prosecutor_Assistant_2024!", name: "Іванова Л.М.", position: "Помічник прокурора" },
+                { username: "prosecutor_criminal", password: "Prosecutor_Criminal_2024!", name: "Семенюк В.І.", position: "Прокурор-криміналіст" },
+                { username: "prosecutor_super", password: "Prosecutor_Supervision_2024!", name: "Козак Р.С.", position: "Спеціаліст з нагляду" }
+            ]
         };
 
         let currentAgency = null;
@@ -691,7 +720,7 @@
                 closeLoginModal();
                 showAgencyPanel();
             } else {
-                alert('Невірний логін або пароль! Для доступу зверніться до адміністратора системи.');
+                alert('Невірний логін або пароль! Спробуйте один з тестових доступів знизу форми.');
             }
         }
 
@@ -878,17 +907,11 @@
             });
         }
 
-        // 📱 MOBILE SUPPORT
-        function toggleMobileMenu() {
-            const nav = document.querySelector('.mobile-nav');
-            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
-        }
-
         // 🚀 INITIALIZE SYSTEM
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🛡️ ЄРДР PRO System Initialized');
             console.log('Available agencies: ГУНП, СБУ, Прокуратура');
-            console.log('No test credentials available - contact system administrator');
+            console.log('24 unique passwords loaded successfully');
         });
     </script>
 </body>

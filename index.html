@@ -275,6 +275,15 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
+        .security-notice {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .agency-selector {
                 grid-template-columns: 1fr;
@@ -533,13 +542,13 @@
                 
                 <div class="form-group">
                     <label>👤 Логін</label>
-                    <input type="text" class="form-control" id="loginUsername" placeholder="Введіть логін">
+                    <input type="text" class="form-control" id="loginUsername" placeholder="Введіть логін" autocomplete="off">
                 </div>
                 
                 <div class="form-group">
                     <label>🔑 Пароль</label>
                     <div class="password-field">
-                        <input type="password" class="form-control" id="loginPassword" placeholder="Введіть пароль">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Введіть пароль" autocomplete="off">
                         <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
                     </div>
                 </div>
@@ -549,13 +558,9 @@
                     <button class="btn btn-primary" onclick="login()" style="flex: 2;">Увійти</button>
                 </div>
                 
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                    <h4>Тестові доступы:</h4>
-                    <div style="font-size: 0.9em; color: #94a3b8;">
-                        <p><strong>ГУНП:</strong> gunp_user / GunpPass123!</p>
-                        <p><strong>СБУ:</strong> sbu_user / SbuPass123!</p>
-                        <p><strong>Прокуратура:</strong> prosecutor_user / ProsecutorPass123!</p>
-                    </div>
+                <div class="security-notice">
+                    <strong>🔒 Система безпеки</strong>
+                    <p style="margin-top: 5px; font-size: 0.9em;">Для доступу зверніться до адміністратора системи</p>
                 </div>
             </div>
         </div>
@@ -638,20 +643,11 @@
             }
         };
 
-        // 🔐 USERS DATABASE
+        // 🔐 USERS DATABASE - ТЕПЕР ПОРОЖНІЙ
         const USERS = {
-            gunp: [
-                { username: "gunp_user", password: "GunpPass123!", name: "Коваленко І.П.", position: "Начальник управління" },
-                { username: "gunp_invest", password: "GunpInvest2024!", name: "Петренко О.В.", position: "Заступник начальника" }
-            ],
-            sbu: [
-                { username: "sbu_user", password: "SbuPass123!", name: "Мельник А.В.", position: "Начальник відділу" },
-                { username: "sbu_oper", password: "SbuOper2024!", name: "Ковальчук С.М.", position: "Старший оперуповноважений" }
-            ],
-            prosecutor: [
-                { username: "prosecutor_user", password: "ProsecutorPass123!", name: "Віскар М.М.", position: "Генеральний прокурор" },
-                { username: "prosecutor_dept", password: "ProsecutorDept2024!", name: "Кулебяка А.А.", position: "Старший прокурор" }
-            ]
+            gunp: [],
+            sbu: [],
+            prosecutor: []
         };
 
         let currentAgency = null;
@@ -668,12 +664,12 @@
             document.getElementById('modal-avatar').textContent = agencyData.icon;
             document.getElementById('modal-avatar').style.background = agencyData.color;
             
+            // Clear form fields
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            
             // Show login modal
             document.getElementById('loginModal').style.display = 'flex';
-            
-            // Auto-fill test credentials
-            document.getElementById('loginUsername').value = USERS[agency][0].username;
-            document.getElementById('loginPassword').value = USERS[agency][0].password;
         }
 
         // 🔐 LOGIN FUNCTIONALITY
@@ -681,6 +677,13 @@
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
             
+            // Перевірка на порожні поля
+            if (!username || !password) {
+                alert('Будь ласка, заповніть всі поля!');
+                return;
+            }
+            
+            // Спроба знайти користувача
             const user = USERS[currentAgency].find(u => u.username === username && u.password === password);
             
             if (user) {
@@ -688,7 +691,7 @@
                 closeLoginModal();
                 showAgencyPanel();
             } else {
-                alert('Невірний логін або пароль!');
+                alert('Невірний логін або пароль! Для доступу зверніться до адміністратора системи.');
             }
         }
 
@@ -885,6 +888,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🛡️ ЄРДР PRO System Initialized');
             console.log('Available agencies: ГУНП, СБУ, Прокуратура');
+            console.log('No test credentials available - contact system administrator');
         });
     </script>
 </body>

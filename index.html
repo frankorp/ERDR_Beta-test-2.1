@@ -89,11 +89,20 @@
                 padding: 10px;
                 border-radius: 10px;
                 transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 0.8em;
+                gap: 5px;
             }
             
             .nav-btn.active {
                 background: var(--primary);
                 color: white;
+            }
+            
+            .nav-btn span {
+                font-size: 1.2em;
             }
         }
 
@@ -180,11 +189,56 @@
             border-radius: 15px;
             padding: 20px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .case-item:hover {
             background: rgba(255,255,255,0.1);
             transform: translateY(-2px);
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .case-id {
+            font-weight: bold;
+            color: #60a5fa;
+        }
+
+        .case-priority {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .priority-critical {
+            background: var(--danger);
+        }
+
+        .priority-high {
+            background: var(--warning);
+        }
+
+        .priority-medium {
+            background: #3b82f6;
+        }
+
+        .priority-low {
+            background: var(--success);
+        }
+
+        .case-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #cbd5e1;
         }
 
         .form-group {
@@ -226,6 +280,16 @@
             color: white;
         }
 
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -250,13 +314,90 @@
             overflow-y: auto;
             border: 1px solid rgba(255,255,255,0.1);
         }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .security-badge {
+            background: var(--danger);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .access-level {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .level-top-secret {
+            background: var(--danger);
+        }
+
+        .level-secret {
+            background: var(--warning);
+        }
+
+        .level-confidential {
+            background: var(--primary);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div style="display: flex; justify-content: between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h1 style="font-size: 2.5em; margin-bottom: 10px;">🛡️ ЄРДР PRO</h1>
                     <p style="color: #cbd5e1; font-size: 1.1em;">Розширена система управління розслідуваннями</p>
@@ -274,11 +415,63 @@
             <button class="btn" onclick="dismissInstall()">Пізніше</button>
         </div>
 
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCases">0</div>
+                <div>Всього справ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeCases">0</div>
+                <div>Активних справ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="criticalCases">0</div>
+                <div>Критичних справ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="resolvedCases">0</div>
+                <div>Вирішених справ</div>
+            </div>
+        </div>
+
         <!-- Main Content -->
         <div class="dashboard-grid">
             <!-- Cases Section -->
             <div class="card">
-                <h2>📋 Справи та розслідування</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>📋 Справи та розслідування</h2>
+                    <button class="btn btn-primary" onclick="openNewCaseModal()">+ Нова справа</button>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Пошук справ...">
+                </div>
+                
+                <div class="filters">
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">Всі статуси</option>
+                        <option value="active">Активні</option>
+                        <option value="pending">На розгляді</option>
+                        <option value="closed">Закриті</option>
+                    </select>
+                    
+                    <select class="filter-select" id="priorityFilter">
+                        <option value="all">Всі пріоритети</option>
+                        <option value="critical">Критичний</option>
+                        <option value="high">Високий</option>
+                        <option value="medium">Середній</option>
+                        <option value="low">Низький</option>
+                    </select>
+                    
+                    <select class="filter-select" id="typeFilter">
+                        <option value="all">Всі типи</option>
+                        <option value="criminal">Кримінальні</option>
+                        <option value="administrative">Адміністративні</option>
+                        <option value="internal">Внутрішні</option>
+                    </select>
+                </div>
+                
                 <div class="cases-container" id="casesList">
                     <!-- Cases will be loaded here -->
                 </div>
@@ -287,20 +480,252 @@
             <!-- User Panel -->
             <div class="card">
                 <h2>👤 Панель управління</h2>
-                <!-- Login form -->
+                
+                <div class="user-info">
+                    <div class="user-avatar">JD</div>
+                    <h3>Денисенко Є.В.</h3>
+                    <p>Старший слідчий</p>
+                    <span class="access-level level-top-secret">TOP SECRET</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Пошук за номером справи</label>
+                    <input type="text" class="form-control" id="caseNumberSearch" placeholder="Введіть номер справи...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Швидкі дії</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="btn" onclick="exportData()">📤 Експорт даних</button>
+                        <button class="btn" onclick="showAuditLog()">📋 Журнал аудиту</button>
+                        <button class="btn btn-danger" onclick="logout()">🚪 Вийти з системи</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Case Modal -->
+        <div class="modal" id="newCaseModal">
+            <div class="modal-content">
+                <h2 style="margin-bottom: 20px;">➕ Нова справа</h2>
+                
+                <div class="form-group">
+                    <label>Назва справи</label>
+                    <input type="text" class="form-control" id="caseTitle" placeholder="Введіть назву справи...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Опис</label>
+                    <textarea class="form-control" id="caseDescription" rows="3" placeholder="Детальний опис справи..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Тип справи</label>
+                    <select class="form-control" id="caseType">
+                        <option value="criminal">Кримінальна</option>
+                        <option value="administrative">Адміністративна</option>
+                        <option value="internal">Внутрішня</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Пріоритет</label>
+                    <select class="form-control" id="casePriority">
+                        <option value="low">Низький</option>
+                        <option value="medium">Середній</option>
+                        <option value="high">Високий</option>
+                        <option value="critical">Критичний</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Відповідальний слідчий</label>
+                    <input type="text" class="form-control" id="caseInvestigator" value="Денисенко Є.В." readonly>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button class="btn" onclick="closeNewCaseModal()">Скасувати</button>
+                    <button class="btn btn-primary" onclick="createNewCase()">Створити справу</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Details Modal -->
+        <div class="modal" id="caseDetailsModal">
+            <div class="modal-content">
+                <div id="caseDetailsContent">
+                    <!-- Case details will be loaded here -->
+                </div>
             </div>
         </div>
 
         <!-- Mobile Navigation -->
         <div class="mobile-nav">
-            <button class="nav-btn active">📋</button>
-            <button class="nav-btn">🔍</button>
-            <button class="nav-btn">📊</button>
-            <button class="nav-btn">⚙️</button>
+            <button class="nav-btn active">
+                <span>📋</span>
+                <div>Справи</div>
+            </button>
+            <button class="nav-btn">
+                <span>🔍</span>
+                <div>Пошук</div>
+            </button>
+            <button class="nav-btn">
+                <span>📊</span>
+                <div>Звіти</div>
+            </button>
+            <button class="nav-btn">
+                <span>⚙️</span>
+                <div>Налаштування</div>
+            </button>
         </div>
     </div>
 
     <script>
+        // 🗄️ INDEXEDDB DATABASE
+        class CaseDatabase {
+            constructor() {
+                this.dbName = 'ERDR_PRO_DB';
+                this.version = 1;
+                this.db = null;
+            }
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+                    
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve(this.db);
+                    };
+                    
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        
+                        // Create cases store
+                        if (!db.objectStoreNames.contains('cases')) {
+                            const casesStore = db.createObjectStore('cases', { keyPath: 'id', autoIncrement: true });
+                            casesStore.createIndex('status', 'status', { unique: false });
+                            casesStore.createIndex('priority', 'priority', { unique: false });
+                            casesStore.createIndex('type', 'type', { unique: false });
+                            casesStore.createIndex('investigator', 'investigator', { unique: false });
+                        }
+                        
+                        // Create audit log store
+                        if (!db.objectStoreNames.contains('audit')) {
+                            const auditStore = db.createObjectStore('audit', { keyPath: 'id', autoIncrement: true });
+                            auditStore.createIndex('timestamp', 'timestamp', { unique: false });
+                            auditStore.createIndex('user', 'user', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            async addCase(caseData) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['cases'], 'readwrite');
+                    const store = transaction.objectStore('cases');
+                    const request = store.add({
+                        ...caseData,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
+                    
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getAllCases() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['cases'], 'readonly');
+                    const store = transaction.objectStore('cases');
+                    const request = store.getAll();
+                    
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async searchCases(query, filters = {}) {
+                const allCases = await this.getAllCases();
+                
+                return allCases.filter(caseItem => {
+                    // Text search
+                    const matchesSearch = !query || 
+                        caseItem.title.toLowerCase().includes(query.toLowerCase()) ||
+                        caseItem.description.toLowerCase().includes(query.toLowerCase()) ||
+                        caseItem.id.toString().includes(query);
+                    
+                    // Filter by status
+                    const matchesStatus = !filters.status || filters.status === 'all' || 
+                        caseItem.status === filters.status;
+                    
+                    // Filter by priority
+                    const matchesPriority = !filters.priority || filters.priority === 'all' || 
+                        caseItem.priority === filters.priority;
+                    
+                    // Filter by type
+                    const matchesType = !filters.type || filters.type === 'all' || 
+                        caseItem.type === filters.type;
+                    
+                    return matchesSearch && matchesStatus && matchesPriority && matchesType;
+                });
+            }
+
+            async logAudit(action, details) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['audit'], 'readwrite');
+                    const store = transaction.objectStore('audit');
+                    const request = store.add({
+                        action,
+                        details,
+                        user: 'Денисенко Є.В.',
+                        timestamp: new Date()
+                    });
+                    
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+        }
+
+        // 🛡️ SECURITY MANAGER
+        class SecurityManager {
+            constructor() {
+                this.accessLevels = {
+                    'top_secret': ['view_all', 'edit_all', 'delete', 'export', 'audit'],
+                    'secret': ['view_assigned', 'edit_assigned', 'create'],
+                    'confidential': ['view_limited', 'comment'],
+                    'public': ['view_public']
+                };
+                
+                this.currentUser = {
+                    name: 'Денисенко Є.В.',
+                    role: 'Старший слідчий',
+                    level: 'top_secret'
+                };
+            }
+
+            hasPermission(permission) {
+                return this.accessLevels[this.currentUser.level].includes(permission);
+            }
+
+            encryptData(data) {
+                // Basic encryption for demo purposes
+                return btoa(JSON.stringify(data));
+            }
+
+            decryptData(encryptedData) {
+                try {
+                    return JSON.parse(atob(encryptedData));
+                } catch (e) {
+                    console.error('Decryption failed:', e);
+                    return null;
+                }
+            }
+        }
+
         // 🚀 PWA FUNCTIONALITY
         class PWAInstaller {
             constructor() {
@@ -370,8 +795,8 @@
                 navBtns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         navBtns.forEach(b => b.classList.remove('active'));
-                        e.target.classList.add('active');
-                        this.switchView(e.target.textContent);
+                        e.currentTarget.classList.add('active');
+                        this.switchView(e.currentTarget.textContent);
                     });
                 });
             }
@@ -478,8 +903,248 @@
             }
         }
 
+        // 🎯 MAIN APPLICATION
+        class ERDRApp {
+            constructor() {
+                this.db = new CaseDatabase();
+                this.security = new SecurityManager();
+                this.cases = [];
+                this.init();
+            }
+
+            async init() {
+                await this.db.init();
+                await this.loadCases();
+                this.setupEventListeners();
+                this.updateStatistics();
+                
+                // Log initial access
+                await this.db.logAudit('system_access', 'User accessed the system');
+            }
+
+            async loadCases() {
+                this.cases = await this.db.getAllCases();
+                
+                // If no cases, add sample data
+                if (this.cases.length === 0) {
+                    await this.addSampleData();
+                    this.cases = await this.db.getAllCases();
+                }
+                
+                this.renderCases();
+            }
+
+            async addSampleData() {
+                const sampleCases = [
+                    {
+                        title: "Розслідування корупційної схеми",
+                        description: "Розслідування щодо незаконного збагачення посадових осіб",
+                        type: "criminal",
+                        priority: "critical",
+                        status: "active",
+                        investigator: "Денисенко Є.В.",
+                        createdDate: "2023-10-15"
+                    },
+                    {
+                        title: "Перевірка фінансових операцій",
+                        description: "Аналіз підозрілих банківських транзакцій",
+                        type: "administrative",
+                        priority: "high",
+                        status: "active",
+                        investigator: "Денисенко Є.В.",
+                        createdDate: "2023-11-20"
+                    },
+                    {
+                        title: "Внутрішня перевірка персоналу",
+                        description: "Перевірка співробітників на предмет конфлікту інтересів",
+                        type: "internal",
+                        priority: "medium",
+                        status: "pending",
+                        investigator: "Денисенко Є.В.",
+                        createdDate: "2023-12-05"
+                    }
+                ];
+
+                for (const caseData of sampleCases) {
+                    await this.db.addCase(caseData);
+                }
+            }
+
+            renderCases(casesToRender = null) {
+                const casesList = document.getElementById('casesList');
+                const cases = casesToRender || this.cases;
+                
+                casesList.innerHTML = '';
+                
+                if (cases.length === 0) {
+                    casesList.innerHTML = '<div style="text-align: center; padding: 40px; color: #94a3b8;">Справ не знайдено</div>';
+                    return;
+                }
+                
+                cases.forEach((caseItem, index) => {
+                    const caseElement = document.createElement('div');
+                    caseElement.className = 'case-item';
+                    caseElement.onclick = () => this.showCaseDetails(caseItem);
+                    
+                    const priorityClass = `priority-${caseItem.priority}`;
+                    
+                    caseElement.innerHTML = `
+                        <div class="case-header">
+                            <div class="case-id">Справа #${caseItem.id}</div>
+                            <div class="case-priority ${priorityClass}">${this.getPriorityText(caseItem.priority)}</div>
+                        </div>
+                        <h3>${caseItem.title}</h3>
+                        <p>${caseItem.description}</p>
+                        <div class="case-details">
+                            <div><strong>Тип:</strong> ${this.getTypeText(caseItem.type)}</div>
+                            <div><strong>Статус:</strong> ${this.getStatusText(caseItem.status)}</div>
+                            <div><strong>Слідчий:</strong> ${caseItem.investigator}</div>
+                            <div><strong>Створено:</strong> ${caseItem.createdDate}</div>
+                        </div>
+                    `;
+                    
+                    casesList.appendChild(caseElement);
+                });
+            }
+
+            getPriorityText(priority) {
+                const priorities = {
+                    'critical': 'Критичний',
+                    'high': 'Високий',
+                    'medium': 'Середній',
+                    'low': 'Низький'
+                };
+                return priorities[priority] || priority;
+            }
+
+            getTypeText(type) {
+                const types = {
+                    'criminal': 'Кримінальна',
+                    'administrative': 'Адміністративна',
+                    'internal': 'Внутрішня'
+                };
+                return types[type] || type;
+            }
+
+            getStatusText(status) {
+                const statuses = {
+                    'active': 'Активна',
+                    'pending': 'На розгляді',
+                    'closed': 'Закрита'
+                };
+                return statuses[status] || status;
+            }
+
+            async showCaseDetails(caseItem) {
+                const modal = document.getElementById('caseDetailsModal');
+                const content = document.getElementById('caseDetailsContent');
+                
+                content.innerHTML = `
+                    <h2>Деталі справи #${caseItem.id}</h2>
+                    <div style="margin: 20px 0;">
+                        <div class="case-header">
+                            <h3>${caseItem.title}</h3>
+                            <div class="case-priority priority-${caseItem.priority}">${this.getPriorityText(caseItem.priority)}</div>
+                        </div>
+                        <p style="margin: 15px 0;">${caseItem.description}</p>
+                        <div class="case-details">
+                            <div><strong>Тип:</strong> ${this.getTypeText(caseItem.type)}</div>
+                            <div><strong>Статус:</strong> ${this.getStatusText(caseItem.status)}</div>
+                            <div><strong>Слідчий:</strong> ${caseItem.investigator}</div>
+                            <div><strong>Створено:</strong> ${caseItem.createdDate}</div>
+                            <div><strong>Останнє оновлення:</strong> ${caseItem.updatedAt ? new Date(caseItem.updatedAt).toLocaleDateString('uk-UA') : 'Н/Д'}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button class="btn" onclick="closeCaseDetails()">Закрити</button>
+                        <button class="btn btn-primary" onclick="editCase(${caseItem.id})">Редагувати</button>
+                    </div>
+                `;
+                
+                modal.style.display = 'flex';
+                
+                // Log view action
+                await this.db.logAudit('case_view', `Viewed case #${caseItem.id}`);
+            }
+
+            setupEventListeners() {
+                // Search functionality
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.handleSearch();
+                });
+                
+                // Filter functionality
+                document.getElementById('statusFilter').addEventListener('change', () => {
+                    this.handleSearch();
+                });
+                
+                document.getElementById('priorityFilter').addEventListener('change', () => {
+                    this.handleSearch();
+                });
+                
+                document.getElementById('typeFilter').addEventListener('change', () => {
+                    this.handleSearch();
+                });
+            }
+
+            async handleSearch() {
+                const query = document.getElementById('searchInput').value;
+                const status = document.getElementById('statusFilter').value;
+                const priority = document.getElementById('priorityFilter').value;
+                const type = document.getElementById('typeFilter').value;
+                
+                const filters = { status, priority, type };
+                const results = await this.db.searchCases(query, filters);
+                
+                this.renderCases(results);
+                this.updateStatistics(results);
+            }
+
+            updateStatistics(cases = null) {
+                const casesToCount = cases || this.cases;
+                
+                document.getElementById('totalCases').textContent = casesToCount.length;
+                document.getElementById('activeCases').textContent = casesToCount.filter(c => c.status === 'active').length;
+                document.getElementById('criticalCases').textContent = casesToCount.filter(c => c.priority === 'critical').length;
+                document.getElementById('resolvedCases').textContent = casesToCount.filter(c => c.status === 'closed').length;
+            }
+
+            async createNewCase() {
+                const title = document.getElementById('caseTitle').value;
+                const description = document.getElementById('caseDescription').value;
+                const type = document.getElementById('caseType').value;
+                const priority = document.getElementById('casePriority').value;
+                const investigator = document.getElementById('caseInvestigator').value;
+                
+                if (!title || !description) {
+                    alert('Будь ласка, заповніть обов\'язкові поля');
+                    return;
+                }
+                
+                const newCase = {
+                    title,
+                    description,
+                    type,
+                    priority,
+                    investigator,
+                    status: 'active',
+                    createdDate: new Date().toISOString().split('T')[0]
+                };
+                
+                await this.db.addCase(newCase);
+                await this.db.logAudit('case_created', `Created new case: ${title}`);
+                
+                this.closeNewCaseModal();
+                await this.loadCases();
+                
+                alert('Справа успішно створена!');
+            }
+        }
+
         // 🚀 INITIALIZE EVERYTHING
-        document.addEventListener('DOMContentLoaded', function() {
+        let app;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
             // Initialize PWA
             const pwa = new PWAInstaller();
             
@@ -489,15 +1154,27 @@
             // Initialize Offline Manager
             const offlineManager = new OfflineManager();
             
-            // Make install function global
+            // Initialize Main App
+            app = new ERDRApp();
+            
+            // Make functions global
             window.installPWA = () => pwa.installPWA();
             window.dismissInstall = () => pwa.hideInstallPrompt();
+            window.openNewCaseModal = () => document.getElementById('newCaseModal').style.display = 'flex';
+            window.closeNewCaseModal = () => document.getElementById('newCaseModal').style.display = 'none';
+            window.closeCaseDetails = () => document.getElementById('caseDetailsModal').style.display = 'none';
+            window.createNewCase = () => app.createNewCase();
+            window.exportData = () => alert('Експорт даних у розробці...');
+            window.showAuditLog = () => alert('Журнал аудиту у розробці...');
+            window.logout = () => {
+                if (confirm('Ви впевнені, що хочете вийти з системи?')) {
+                    alert('Вихід з системи...');
+                    // Redirect to login page
+                }
+            };
             
             console.log('🚀 ЄРДР PRO PWA initialized!');
         });
-
-        // Your existing system code continues here...
-        // [YOUR EXISTING SECURITY SYSTEM, DATABASE, ETC.]
     </script>
 </body>
 </html>

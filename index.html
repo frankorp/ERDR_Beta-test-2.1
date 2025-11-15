@@ -37,7 +37,6 @@
             padding: 20px;
         }
 
-        /* Header */
         .header {
             background: rgba(30, 64, 175, 0.9);
             backdrop-filter: blur(20px);
@@ -49,7 +48,6 @@
             text-align: center;
         }
 
-        /* Agency Selector */
         .agency-selector {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -89,7 +87,6 @@
             margin-bottom: 15px;
         }
 
-        /* Admin Panel */
         .admin-panel {
             display: none;
             background: rgba(30, 41, 59, 0.95);
@@ -195,7 +192,6 @@
             margin-right: 10px;
         }
 
-        /* Login Modal */
         .modal {
             display: none;
             position: fixed;
@@ -214,7 +210,7 @@
             padding: 30px;
             border-radius: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 500px;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -284,6 +280,22 @@
             font-size: 0.8em;
         }
 
+        .password-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .password-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+        }
+
         @media (max-width: 768px) {
             .agency-selector {
                 grid-template-columns: 1fr;
@@ -301,7 +313,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <h1 style="font-size: 2.5em; margin-bottom: 10px;">🛡️ ЄРДР PRO</h1>
             <p style="color: #cbd5e1; font-size: 1.1em;">Об'єднана система управління розслідуваннями</p>
@@ -310,31 +321,26 @@
             </div>
         </header>
 
-        <!-- Agency Selector -->
         <div class="agency-selector">
             <div class="agency-card gunp" onclick="selectAgency('gunp')">
                 <div class="agency-icon">👮‍♂️</div>
                 <h3>ГУНП</h3>
                 <p>Головне управління Національної поліції</p>
-                <p style="color: #94a3b8; margin-top: 10px;">Кримінальні розслідування</p>
             </div>
             
             <div class="agency-card sbu" onclick="selectAgency('sbu')">
                 <div class="agency-icon">🕵️‍♂️</div>
                 <h3>СБУ</h3>
                 <p>Служба Безпеки України</p>
-                <p style="color: #94a3b8; margin-top: 10px;">Контррозвідка, держбезпека</p>
             </div>
             
             <div class="agency-card prosecutor" onclick="selectAgency('prosecutor')">
                 <div class="agency-icon">⚖️</div>
                 <h3>Прокуратура</h3>
                 <p>Генеральна прокуратура України</p>
-                <p style="color: #94a3b8; margin-top: 10px;">Нагляд за розслідуваннями</p>
             </div>
         </div>
 
-        <!-- Admin Panels -->
         <!-- ГУНП Admin Panel -->
         <div id="gunp-panel" class="admin-panel">
             <div class="admin-header">
@@ -347,19 +353,19 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="gunp-total-cases">0</div>
+                    <div class="stat-number">45</div>
                     <div>Всього справ</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="gunp-active-cases">0</div>
+                    <div class="stat-number">32</div>
                     <div>Активних справ</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="gunp-critical-cases">0</div>
+                    <div class="stat-number">8</div>
                     <div>Критичних справ</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="gunp-officers">0</div>
+                    <div class="stat-number">24</div>
                     <div>Співробітників</div>
                 </div>
             </div>
@@ -372,29 +378,21 @@
                         <th>Посада</th>
                         <th>Підрозділ</th>
                         <th>Статус</th>
-                        <th>Кількість справ</th>
-                        <th>Дії</th>
                     </tr>
                 </thead>
-                <tbody id="gunp-personnel">
-                    <!-- ГУНП personnel will be loaded here -->
-                </tbody>
-            </table>
-
-            <h3>Кримінальні справи</h3>
-            <table class="table">
-                <thead>
+                <tbody>
                     <tr>
-                        <th>№ справи</th>
-                        <th>Назва</th>
-                        <th>Категорія</th>
-                        <th>Статус</th>
-                        <th>Відповідальний</th>
-                        <th>Дата відкриття</th>
+                        <td>Коваленко І.П.</td>
+                        <td>Начальник управління</td>
+                        <td>Кримінальна поліція</td>
+                        <td><span class="badge badge-success">Активний</span></td>
                     </tr>
-                </thead>
-                <tbody id="gunp-cases">
-                    <!-- ГУНП cases will be loaded here -->
+                    <tr>
+                        <td>Петренко О.В.</td>
+                        <td>Заступник начальника</td>
+                        <td>Слідчий відділ</td>
+                        <td><span class="badge badge-success">Активний</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -411,19 +409,19 @@
 
             <div class="stats-grid">
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--sbu-color), #b91c1c);">
-                    <div class="stat-number" id="sbu-total-cases">0</div>
+                    <div class="stat-number">28</div>
                     <div>Оперативних справ</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--sbu-color), #b91c1c);">
-                    <div class="stat-number" id="sbu-active-ops">0</div>
+                    <div class="stat-number">15</div>
                     <div>Активних операцій</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--sbu-color), #b91c1c);">
-                    <div class="stat-number" id="sbu-counterintel">0</div>
+                    <div class="stat-number">9</div>
                     <div>Контррозвідувальних справ</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--sbu-color), #b91c1c);">
-                    <div class="stat-number" id="sbu-agents">0</div>
+                    <div class="stat-number">18</div>
                     <div>Оперативних співробітників</div>
                 </div>
             </div>
@@ -436,29 +434,21 @@
                         <th>Підрозділ</th>
                         <th>Спеціалізація</th>
                         <th>Рівень доступу</th>
-                        <th>Активні операції</th>
-                        <th>Дії</th>
                     </tr>
                 </thead>
-                <tbody id="sbu-personnel">
-                    <!-- СБУ personnel will be loaded here -->
-                </tbody>
-            </table>
-
-            <h3>Спеціальні операції</h3>
-            <table class="table">
-                <thead>
+                <tbody>
                     <tr>
-                        <th>Код операції</th>
-                        <th>Назва</th>
-                        <th>Тип</th>
-                        <th>Статус</th>
-                        <th>Керівник</th>
-                        <th>Рівень секретності</th>
+                        <td>Мельник А.В.</td>
+                        <td>Контррозвідка</td>
+                        <td>Начальник відділу</td>
+                        <td><span class="badge badge-danger">TOP SECRET</span></td>
                     </tr>
-                </thead>
-                <tbody id="sbu-operations">
-                    <!-- СБУ operations will be loaded here -->
+                    <tr>
+                        <td>Ковальчук С.М.</td>
+                        <td>Боротьба з тероризмом</td>
+                        <td>Старший оперуповноважений</td>
+                        <td><span class="badge badge-warning">SECRET</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -475,19 +465,19 @@
 
             <div class="stats-grid">
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--prosecutor-color), #9a3412);">
-                    <div class="stat-number" id="prosecutor-total-cases">0</div>
+                    <div class="stat-number">89</div>
                     <div>Супроводжуваних справ</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--prosecutor-color), #9a3412);">
-                    <div class="stat-number" id="prosecutor-court-cases">0</div>
+                    <div class="stat-number">23</div>
                     <div>Справ в суді</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--prosecutor-color), #9a3412);">
-                    <div class="stat-number" id="prosecutor-supervisions">0</div>
+                    <div class="stat-number">45</div>
                     <div>Наглядових проваджень</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, var(--prosecutor-color), #9a3412);">
-                    <div class="stat-number" id="prosecutor-prosecutors">0</div>
+                    <div class="stat-number">12</div>
                     <div>Прокурорів</div>
                 </div>
             </div>
@@ -500,29 +490,21 @@
                         <th>Посада</th>
                         <th>Відділ</th>
                         <th>Статус</th>
-                        <th>Кількість справ</th>
-                        <th>Дії</th>
                     </tr>
                 </thead>
-                <tbody id="prosecutor-personnel">
-                    <!-- Прокуратура personnel will be loaded here -->
-                </tbody>
-            </table>
-
-            <h3>Нагляд за розслідуваннями</h3>
-            <table class="table">
-                <thead>
+                <tbody>
                     <tr>
-                        <th>№ провадження</th>
-                        <th>Справа</th>
-                        <th>Відомство</th>
-                        <th>Статус</th>
-                        <th>Відповідальний прокурор</th>
-                        <th>Дата відкриття</th>
+                        <td>Віскар М.М.</td>
+                        <td>Генеральний прокурор</td>
+                        <td>Генеральна прокуратура</td>
+                        <td><span class="badge badge-success">Активний</span></td>
                     </tr>
-                </thead>
-                <tbody id="prosecutor-supervisions">
-                    <!-- Прокуратура supervisions will be loaded here -->
+                    <tr>
+                        <td>Кулебяка А.А.</td>
+                        <td>Старший прокурор</td>
+                        <td>Відділ кримінальних справ</td>
+                        <td><span class="badge badge-success">Активний</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -559,168 +541,111 @@
                 </div>
                 
                 <div class="test-credentials">
-                    <h4>Тестові доступы для перевірки:</h4>
-                    <p><strong>ГУНП:</strong> gunp_admin / Gunp_Admin_2024!Secure</p>
-                    <p><strong>СБУ:</strong> sbu_admin / Sbu_Admin_2024!Secure</p>
-                    <p><strong>Прокуратура:</strong> prosecutor_admin / Prosecutor_Admin_2024!Secure</p>
+                    <h4>🔓 Тестові доступы для перевірки:</h4>
+                    <div class="password-list" id="passwordList">
+                        <!-- Паролі будуть завантажені тут -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 📊 DATA FOR ALL AGENCIES
-        const AGENCY_DATA = {
-            gunp: {
-                name: "ГУНП",
-                fullName: "Головне управління Національної поліції",
-                color: "#1e40af",
-                icon: "👮‍♂️",
-                personnel: [
-                    { name: "Коваленко І.П.", position: "Начальник управління", department: "Кримінальна поліція", status: "active", cases: 15, avatar: "КІ" },
-                    { name: "Петренко О.В.", position: "Заступник начальника", department: "Слідчий відділ", status: "active", cases: 12, avatar: "ПО" },
-                    { name: "Шевченко М.І.", position: "Старший слідчий", department: "Відділ тяжких злочинів", status: "active", cases: 8, avatar: "ШМ" },
-                    { name: "Бондаренко С.П.", position: "Слідчий", department: "Відділ економічних злочинів", status: "active", cases: 6, avatar: "БС" }
-                ],
-                cases: [
-                    { id: "ГУНП-2024-001", title: "Розслідування корупційної схеми", category: "Корупція", status: "active", officer: "Коваленко І.П.", date: "2024-01-15" },
-                    { id: "ГУНП-2024-002", title: "Контрабанда наркотичних речовин", category: "Наркотики", status: "active", officer: "Петренко О.В.", date: "2024-01-20" },
-                    { id: "ГУНП-2024-003", title: "Вбивство з особливою жорстокістю", category: "Вбивство", status: "closed", officer: "Шевченко М.І.", date: "2024-01-10" },
-                    { id: "ГУНП-2024-004", title: "Шахрайство з нерухомістю", category: "Економічні злочини", status: "active", officer: "Бондаренко С.П.", date: "2024-01-25" }
-                ],
-                stats: {
-                    totalCases: 45,
-                    activeCases: 32,
-                    criticalCases: 8,
-                    officers: 24
-                }
-            },
-            sbu: {
-                name: "СБУ",
-                fullName: "Служба Безпеки України",
-                color: "#dc2626",
-                icon: "🕵️‍♂️",
-                personnel: [
-                    { name: "Мельник А.В.", position: "Начальник відділу", department: "Контррозвідка", clearance: "top_secret", operations: 5, avatar: "МА" },
-                    { name: "Ковальчук С.М.", position: "Старший оперуповноважений", department: "Боротьба з тероризмом", clearance: "secret", operations: 3, avatar: "КС" },
-                    { name: "Ткаченко І.П.", position: "Оперуповноважений", department: "Кібербезпека", clearance: "secret", operations: 4, avatar: "ТІ" },
-                    { name: "Лисенко О.Р.", position: "Аналітик", department: "Аналітичний відділ", clearance: "confidential", operations: 2, avatar: "ЛО" }
-                ],
-                operations: [
-                    { code: "СБУ-ОП-001", title: "Операція 'Щит'", type: "Контррозвідка", status: "active", lead: "Мельник А.В.", clearance: "top_secret" },
-                    { code: "СБУ-ОП-002", title: "Операція 'Циклон'", type: "Боротьба з тероризмом", status: "active", lead: "Ковальчук С.М.", clearance: "secret" },
-                    { code: "СБУ-ОП-003", title: "Операція 'Кіберщит'", type: "Кібербезпека", status: "completed", lead: "Ткаченко І.П.", clearance: "secret" },
-                    { code: "СБУ-ОП-004", title: "Операція 'Аналіз'", type: "Аналітична", status: "active", lead: "Лисенко О.Р.", clearance: "confidential" }
-                ],
-                stats: {
-                    totalCases: 28,
-                    activeOps: 15,
-                    counterintel: 9,
-                    agents: 18
-                }
-            },
-            prosecutor: {
-                name: "Прокуратура",
-                fullName: "Генеральна прокуратура України",
-                color: "#7c2d12",
-                icon: "⚖️",
-                personnel: [
-                    { name: "Віскар М.М.", position: "Генеральний прокурор", department: "Генеральна прокуратура", status: "active", cases: 156, avatar: "ВМ" },
-                    { name: "Кулебяка А.А.", position: "Старший прокурор", department: "Відділ кримінальних справ", status: "active", cases: 24, avatar: "КА" },
-                    { name: "Маркієнко М.С.", position: "Прокурор", department: "Відділ адміністративних справ", status: "active", cases: 18, avatar: "ММ" },
-                    { name: "Шмелев А.Є.", position: "Прокурор відділу", department: "Відділ особливих справ", status: "active", cases: 15, avatar: "ША" }
-                ],
-                supervisions: [
-                    { id: "ПР-2024-001", case: "Розслідування корупційної схеми", agency: "ГУНП", status: "active", prosecutor: "Кулебяка А.А.", date: "2024-01-15" },
-                    { id: "ПР-2024-002", case: "Операція 'Щит'", agency: "СБУ", status: "active", prosecutor: "Маркієнко М.С.", date: "2024-01-20" },
-                    { id: "ПР-2024-003", case: "Контрабанда наркотичних речовин", agency: "ГУНП", status: "court", prosecutor: "Шмелев А.Є.", date: "2024-01-10" },
-                    { id: "ПР-2024-004", case: "Операція 'Циклон'", agency: "СБУ", status: "supervision", prosecutor: "Віскар М.М.", date: "2024-01-25" }
-                ],
-                stats: {
-                    totalCases: 89,
-                    courtCases: 23,
-                    supervisions: 45,
-                    prosecutors: 12
-                }
-            }
-        };
-
-        // 🔐 USERS DATABASE - 24 УНІКАЛЬНИХ ПАРОЛІ
+        // 🔐 24 АБСОЛЮТНО РІЗНИХ ПАРОЛЯ
         const USERS = {
             gunp: [
-                { username: "gunp_admin", password: "Gunp_Admin_2024!Secure", name: "Коваленко І.П.", position: "Головний адміністратор ГУНП" },
-                { username: "gunp_director", password: "Gunp_Director_2024!", name: "Петренко О.В.", position: "Начальник управління" },
-                { username: "gunp_deputy", password: "Gunp_Deputy_2024!", name: "Шевченко М.І.", position: "Заступник начальника" },
-                { username: "gunp_senior", password: "Gunp_Senior_Invest_2024!", name: "Бондаренко С.П.", position: "Старший слідчий" },
-                { username: "gunp_invest", password: "Gunp_Investigator_2024!", name: "Сидоренко В.П.", position: "Слідчий" },
-                { username: "gunp_oper", password: "Gunp_Operative_2024!", name: "Кравченко А.М.", position: "Оперативник" },
-                { username: "gunp_analyst", password: "Gunp_Analyst_2024!", name: "Павленко І.В.", position: "Аналітик" },
-                { username: "gunp_tech", password: "Gunp_Tech_2024!", name: "Ткачук Р.О.", position: "Технічний спеціаліст" }
+                { username: "gunp_admin", password: "BlueDragon2024", name: "Коваленко І.П.", position: "Головний адміністратор ГУНП" },
+                { username: "gunp_director", password: "PoliceGuard987", name: "Петренко О.В.", position: "Начальник управління" },
+                { username: "gunp_deputy", password: "SecureBase555", name: "Шевченко М.І.", position: "Заступник начальника" },
+                { username: "gunp_senior", password: "Investigator777", name: "Бондаренко С.П.", position: "Старший слідчий" },
+                { username: "gunp_invest", password: "CrimeHunter333", name: "Сидоренко В.П.", position: "Слідчий" },
+                { username: "gunp_oper", password: "PatrolAgent111", name: "Кравченко А.М.", position: "Оперативник" },
+                { username: "gunp_analyst", password: "DataAnalyzer999", name: "Павленко І.В.", position: "Аналітик" },
+                { username: "gunp_tech", password: "TechSupport444", name: "Ткачук Р.О.", position: "Технічний спеціаліст" }
             ],
             sbu: [
-                { username: "sbu_admin", password: "Sbu_Admin_2024!Secure", name: "Мельник А.В.", position: "Головний адміністратор СБУ" },
-                { username: "sbu_counterintel", password: "Sbu_CounterIntel_2024!", name: "Ковальчук С.М.", position: "Начальник контррозвідки" },
-                { username: "sbu_senior", password: "Sbu_Senior_Op_2024!", name: "Ткаченко І.П.", position: "Старший оперуповноважений" },
-                { username: "sbu_oper", password: "Sbu_Operative_2024!", name: "Лисенко О.Р.", position: "Оперуповноважений" },
-                { username: "sbu_cyber", password: "Sbu_Cyber_2024!", name: "Шевчук М.С.", position: "Кіберспеціаліст" },
-                { username: "sbu_analyst", password: "Sbu_Intel_Analyst_2024!", name: "Білий В.П.", position: "Аналітик розвідки" },
-                { username: "sbu_security", password: "Sbu_Security_2024!", name: "Чорний О.І.", position: "Спеціаліст безпеки" },
-                { username: "sbu_tech", password: "Sbu_Tech_2024!", name: "Зеленський П.М.", position: "Технічний експерт" }
+                { username: "sbu_admin", password: "RedShadow2024", name: "Мельник А.В.", position: "Головний адміністратор СБУ" },
+                { username: "sbu_counter", password: "CounterSpy789", name: "Ковальчук С.М.", position: "Начальник контррозвідки" },
+                { username: "sbu_senior", password: "SecretAgent456", name: "Ткаченко І.П.", position: "Старший оперуповноважений" },
+                { username: "sbu_oper", password: "UnderCover123", name: "Лисенко О.Р.", position: "Оперуповноважений" },
+                { username: "sbu_cyber", password: "CyberShield321", name: "Шевчук М.С.", position: "Кіберспеціаліст" },
+                { username: "sbu_analyst", password: "IntelMaster654", name: "Білий В.П.", position: "Аналітик розвідки" },
+                { username: "sbu_security", password: "SafeGuard987", name: "Чорний О.І.", position: "Спеціаліст безпеки" },
+                { username: "sbu_tech", password: "TechWizard555", name: "Зеленський П.М.", position: "Технічний експерт" }
             ],
             prosecutor: [
-                { username: "prosecutor_admin", password: "Prosecutor_Admin_2024!Secure", name: "Віскар М.М.", position: "Головний адміністратор Прокуратури" },
-                { username: "prosecutor_general", password: "Prosecutor_General_2024!", name: "Кулебяка А.А.", position: "Генеральний прокурор" },
-                { username: "prosecutor_deputy", password: "Prosecutor_Deputy_2024!", name: "Маркієнко М.С.", position: "Заступник прокурора" },
-                { username: "prosecutor_senior", password: "Prosecutor_Senior_2024!", name: "Шмелев А.Є.", position: "Старший прокурор" },
-                { username: "prosecutor_dept", password: "Prosecutor_Dept_2024!", name: "Петров К.О.", position: "Прокурор відділу" },
-                { username: "prosecutor_assist", password: "Prosecutor_Assistant_2024!", name: "Іванова Л.М.", position: "Помічник прокурора" },
-                { username: "prosecutor_criminal", password: "Prosecutor_Criminal_2024!", name: "Семенюк В.І.", position: "Прокурор-криміналіст" },
-                { username: "prosecutor_super", password: "Prosecutor_Supervision_2024!", name: "Козак Р.С.", position: "Спеціаліст з нагляду" }
+                { username: "proc_admin", password: "GoldScale2024", name: "Віскар М.М.", position: "Головний адміністратор Прокуратури" },
+                { username: "proc_general", password: "JusticeLord777", name: "Кулебяка А.А.", position: "Генеральний прокурор" },
+                { username: "proc_deputy", password: "LawMaster888", name: "Маркієнко М.С.", position: "Заступник прокурора" },
+                { username: "proc_senior", password: "SeniorLaw555", name: "Шмелев А.Є.", position: "Старший прокурор" },
+                { username: "proc_dept", password: "DeptChief333", name: "Петров К.О.", position: "Прокурор відділу" },
+                { username: "proc_assist", password: "LegalAid111", name: "Іванова Л.М.", position: "Помічник прокурора" },
+                { username: "proc_criminal", password: "CrimeLaw222", name: "Семенюк В.І.", position: "Прокурор-криміналіст" },
+                { username: "proc_super", password: "Supervisor999", name: "Козак Р.С.", position: "Спеціаліст з нагляду" }
             ]
         };
 
         let currentAgency = null;
         let currentUser = null;
 
-        // 🎯 AGENCY SELECTION
         function selectAgency(agency) {
             currentAgency = agency;
-            const agencyData = AGENCY_DATA[agency];
+            const agencyData = getAgencyData(agency);
             
-            // Update modal info
             document.getElementById('modal-agency-name').textContent = agencyData.fullName;
             document.getElementById('modal-agency-desc').textContent = `Вхід до системи ${agencyData.name}`;
             document.getElementById('modal-avatar').textContent = agencyData.icon;
             document.getElementById('modal-avatar').style.background = agencyData.color;
             
-            // Clear form fields
             document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
             
-            // Show login modal
+            // Показуємо паролі для поточного відомства
+            showPasswordsForAgency(agency);
+            
             document.getElementById('loginModal').style.display = 'flex';
         }
 
-        // 🔐 LOGIN FUNCTIONALITY
+        function showPasswordsForAgency(agency) {
+            const passwordList = document.getElementById('passwordList');
+            const users = USERS[agency];
+            
+            passwordList.innerHTML = users.map(user => `
+                <div class="password-item">
+                    <span>${user.username}</span>
+                    <span>${user.password}</span>
+                </div>
+            `).join('');
+        }
+
+        function getAgencyData(agency) {
+            const agencies = {
+                gunp: { name: "ГУНП", fullName: "Головне управління Національної поліції", color: "#1e40af", icon: "👮‍♂️" },
+                sbu: { name: "СБУ", fullName: "Служба Безпеки України", color: "#dc2626", icon: "🕵️‍♂️" },
+                prosecutor: { name: "Прокуратура", fullName: "Генеральна прокуратура України", color: "#7c2d12", icon: "⚖️" }
+            };
+            return agencies[agency];
+        }
+
         function login() {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Перевірка на порожні поля
             if (!username || !password) {
                 alert('Будь ласка, заповніть всі поля!');
                 return;
             }
             
-            // Спроба знайти користувача
-            const user = USERS[currentAgency].find(u => u.username === username && u.password === password);
+            const user = USERS[currentAgency].find(u => 
+                u.username === username && u.password === password
+            );
             
             if (user) {
                 currentUser = user;
                 closeLoginModal();
                 showAgencyPanel();
             } else {
-                alert('Невірний логін або пароль! Спробуйте один з тестових доступів знизу форми.');
+                alert('Невірний логін або пароль! Використовуйте паролі зі списку нижче.');
             }
         }
 
@@ -741,162 +666,12 @@
             }
         }
 
-        // 📊 SHOW AGENCY PANEL
         function showAgencyPanel() {
-            // Hide all panels first
             document.querySelectorAll('.admin-panel').forEach(panel => {
                 panel.style.display = 'none';
             });
             
-            // Show selected agency panel
             document.getElementById(`${currentAgency}-panel`).style.display = 'block';
-            
-            // Load agency data
-            loadAgencyData();
-        }
-
-        function loadAgencyData() {
-            const agencyData = AGENCY_DATA[currentAgency];
-            
-            // Update stats
-            if (currentAgency === 'gunp') {
-                document.getElementById('gunp-total-cases').textContent = agencyData.stats.totalCases;
-                document.getElementById('gunp-active-cases').textContent = agencyData.stats.activeCases;
-                document.getElementById('gunp-critical-cases').textContent = agencyData.stats.criticalCases;
-                document.getElementById('gunp-officers').textContent = agencyData.stats.officers;
-                
-                // Load personnel
-                document.getElementById('gunp-personnel').innerHTML = agencyData.personnel.map(person => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center;">
-                                <div class="user-avatar">${person.avatar}</div>
-                                <div>${person.name}</div>
-                            </div>
-                        </td>
-                        <td>${person.position}</td>
-                        <td>${person.department}</td>
-                        <td><span class="badge badge-success">Активний</span></td>
-                        <td>${person.cases}</td>
-                        <td>
-                            <button class="btn">👁️</button>
-                            <button class="btn">✏️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                // Load cases
-                document.getElementById('gunp-cases').innerHTML = agencyData.cases.map(caseItem => `
-                    <tr>
-                        <td>${caseItem.id}</td>
-                        <td>${caseItem.title}</td>
-                        <td>${caseItem.category}</td>
-                        <td>
-                            <span class="badge ${caseItem.status === 'active' ? 'badge-success' : 'badge-danger'}">
-                                ${caseItem.status === 'active' ? 'Активна' : 'Закрита'}
-                            </span>
-                        </td>
-                        <td>${caseItem.officer}</td>
-                        <td>${caseItem.date}</td>
-                    </tr>
-                `).join('');
-                
-            } else if (currentAgency === 'sbu') {
-                document.getElementById('sbu-total-cases').textContent = agencyData.stats.totalCases;
-                document.getElementById('sbu-active-ops').textContent = agencyData.stats.activeOps;
-                document.getElementById('sbu-counterintel').textContent = agencyData.stats.counterintel;
-                document.getElementById('sbu-agents').textContent = agencyData.stats.agents;
-                
-                // Load personnel
-                document.getElementById('sbu-personnel').innerHTML = agencyData.personnel.map(person => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center;">
-                                <div class="user-avatar" style="background: var(--sbu-color);">${person.avatar}</div>
-                                <div>${person.name}</div>
-                            </div>
-                        </td>
-                        <td>${person.department}</td>
-                        <td>${person.position}</td>
-                        <td>
-                            <span class="badge ${person.clearance === 'top_secret' ? 'badge-danger' : person.clearance === 'secret' ? 'badge-warning' : 'badge-primary'}">
-                                ${person.clearance === 'top_secret' ? 'TOP SECRET' : person.clearance === 'secret' ? 'SECRET' : 'CONFIDENTIAL'}
-                            </span>
-                        </td>
-                        <td>${person.operations}</td>
-                        <td>
-                            <button class="btn">👁️</button>
-                            <button class="btn">✏️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                // Load operations
-                document.getElementById('sbu-operations').innerHTML = agencyData.operations.map(op => `
-                    <tr>
-                        <td>${op.code}</td>
-                        <td>${op.title}</td>
-                        <td>${op.type}</td>
-                        <td>
-                            <span class="badge ${op.status === 'active' ? 'badge-success' : 'badge-danger'}">
-                                ${op.status === 'active' ? 'Активна' : 'Завершена'}
-                            </span>
-                        </td>
-                        <td>${op.lead}</td>
-                        <td>
-                            <span class="badge ${op.clearance === 'top_secret' ? 'badge-danger' : 'badge-warning'}">
-                                ${op.clearance === 'top_secret' ? 'TOP SECRET' : 'SECRET'}
-                            </span>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } else if (currentAgency === 'prosecutor') {
-                document.getElementById('prosecutor-total-cases').textContent = agencyData.stats.totalCases;
-                document.getElementById('prosecutor-court-cases').textContent = agencyData.stats.courtCases;
-                document.getElementById('prosecutor-supervisions').textContent = agencyData.stats.supervisions;
-                document.getElementById('prosecutor-prosecutors').textContent = agencyData.stats.prosecutors;
-                
-                // Load personnel
-                document.getElementById('prosecutor-personnel').innerHTML = agencyData.personnel.map(person => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center;">
-                                <div class="user-avatar" style="background: var(--prosecutor-color);">${person.avatar}</div>
-                                <div>${person.name}</div>
-                            </div>
-                        </td>
-                        <td>${person.position}</td>
-                        <td>${person.department}</td>
-                        <td><span class="badge badge-success">Активний</span></td>
-                        <td>${person.cases}</td>
-                        <td>
-                            <button class="btn">👁️</button>
-                            <button class="btn">✏️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                // Load supervisions
-                document.getElementById('prosecutor-supervisions').innerHTML = agencyData.supervisions.map(sup => `
-                    <tr>
-                        <td>${sup.id}</td>
-                        <td>${sup.case}</td>
-                        <td>
-                            <span class="agency-badge ${sup.agency === 'ГУНП' ? 'badge-gunp' : 'badge-sbu'}">
-                                ${sup.agency}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge ${sup.status === 'active' ? 'badge-success' : sup.status === 'court' ? 'badge-warning' : 'badge-primary'}">
-                                ${sup.status === 'active' ? 'Активний' : sup.status === 'court' ? 'В суді' : 'Нагляд'}
-                            </span>
-                        </td>
-                        <td>${sup.prosecutor}</td>
-                        <td>${sup.date}</td>
-                    </tr>
-                `).join('');
-            }
         }
 
         function logout() {
@@ -907,12 +682,15 @@
             });
         }
 
-        // 🚀 INITIALIZE SYSTEM
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🛡️ ЄРДР PRO System Initialized');
-            console.log('Available agencies: ГУНП, СБУ, Прокуратура');
-            console.log('24 unique passwords loaded successfully');
+        // Додаємо обробник для клавіші Enter
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('loginModal').style.display === 'flex') {
+                login();
+            }
         });
+
+        console.log('🛡️ ЄРДР PRO System Initialized');
+        console.log('24 unique passwords loaded successfully');
     </script>
 </body>
 </html>

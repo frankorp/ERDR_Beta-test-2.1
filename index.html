@@ -16,6 +16,7 @@
             --gunp-color: #1e40af;
             --sbu-color: #dc2626;
             --prosecutor-color: #7c2d12;
+            --admin-color: #7e22ce;
         }
 
         * {
@@ -50,7 +51,7 @@
 
         .agency-selector {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -67,7 +68,6 @@
 
         .agency-card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary);
         }
 
         .agency-card.gunp {
@@ -80,6 +80,10 @@
 
         .agency-card.prosecutor {
             border-color: var(--prosecutor-color);
+        }
+
+        .agency-card.admin {
+            border-color: var(--admin-color);
         }
 
         .agency-icon {
@@ -168,6 +172,11 @@
             color: white;
         }
 
+        .btn-admin {
+            background: var(--admin-color);
+            color: white;
+        }
+
         .badge {
             padding: 4px 8px;
             border-radius: 12px;
@@ -179,6 +188,7 @@
         .badge-warning { background: var(--warning); }
         .badge-danger { background: var(--danger); }
         .badge-primary { background: var(--primary); }
+        .badge-admin { background: var(--admin-color); }
 
         .user-avatar {
             width: 40px;
@@ -247,6 +257,7 @@
         .badge-gunp { background: var(--gunp-color); }
         .badge-sbu { background: var(--sbu-color); }
         .badge-prosecutor { background: var(--prosecutor-color); }
+        .badge-admin { background: var(--admin-color); }
 
         .password-field {
             position: relative;
@@ -296,6 +307,42 @@
             font-size: 0.8em;
         }
 
+        .admin-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+
+        .admin-tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-tab.active {
+            background: var(--admin-color);
+        }
+
+        .user-management {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
         @media (max-width: 768px) {
             .agency-selector {
                 grid-template-columns: 1fr;
@@ -307,6 +354,10 @@
             
             .container {
                 padding: 10px;
+            }
+            
+            .user-management {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -338,6 +389,12 @@
                 <div class="agency-icon">⚖️</div>
                 <h3>Прокуратура</h3>
                 <p>Генеральна прокуратура України</p>
+            </div>
+            
+            <div class="agency-card admin" onclick="selectAgency('admin')">
+                <div class="agency-icon">👨‍💼</div>
+                <h3>Адмін-панель</h3>
+                <p>Управління системою</p>
             </div>
         </div>
 
@@ -509,6 +566,244 @@
             </table>
         </div>
 
+        <!-- Адмін-панель -->
+        <div id="admin-panel" class="admin-panel">
+            <div class="admin-header">
+                <div>
+                    <h2>👨‍💼 Адмін-панель</h2>
+                    <p style="color: #cbd5e1;">Управління системою та користувачами</p>
+                </div>
+                <button class="btn btn-admin" onclick="logout()">Вийти</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showAdminTab('users')">Користувачі</button>
+                <button class="admin-tab" onclick="showAdminTab('system')">Система</button>
+                <button class="admin-tab" onclick="showAdminTab('logs')">Логи</button>
+                <button class="admin-tab" onclick="showAdminTab('backup')">Резервне копіювання</button>
+            </div>
+
+            <!-- Управління користувачами -->
+            <div id="admin-users" class="admin-section">
+                <h3>📊 Управління користувачами</h3>
+                <div class="stats-grid">
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-color), #6b21a8);">
+                        <div class="stat-number" id="total-users">24</div>
+                        <div>Всього користувачів</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-color), #6b21a8);">
+                        <div class="stat-number" id="active-users">24</div>
+                        <div>Активних</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-color), #6b21a8);">
+                        <div class="stat-number">3</div>
+                        <div>Відомства</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-color), #6b21a8);">
+                        <div class="stat-number">8</div>
+                        <div>Користувачів на відомство</div>
+                    </div>
+                </div>
+
+                <div class="user-management">
+                    <div>
+                        <h4>👮‍♂️ ГУНП - Користувачі</h4>
+                        <div class="password-list">
+                            <div class="password-item">
+                                <span>gunp_admin</span>
+                                <span>BlueDragon2024</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_director</span>
+                                <span>PoliceGuard987</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_deputy</span>
+                                <span>SecureBase555</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_senior</span>
+                                <span>Investigator777</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_invest</span>
+                                <span>CrimeHunter333</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_oper</span>
+                                <span>PatrolAgent111</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_analyst</span>
+                                <span>DataAnalyzer999</span>
+                            </div>
+                            <div class="password-item">
+                                <span>gunp_tech</span>
+                                <span>TechSupport444</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4>🕵️‍♂️ СБУ - Користувачі</h4>
+                        <div class="password-list">
+                            <div class="password-item">
+                                <span>sbu_admin</span>
+                                <span>RedShadow2024</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_counter</span>
+                                <span>CounterSpy789</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_senior</span>
+                                <span>SecretAgent456</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_oper</span>
+                                <span>UnderCover123</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_cyber</span>
+                                <span>CyberShield321</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_analyst</span>
+                                <span>IntelMaster654</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_security</span>
+                                <span>SafeGuard987</span>
+                            </div>
+                            <div class="password-item">
+                                <span>sbu_tech</span>
+                                <span>TechWizard555</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h4>⚖️ Прокуратура - Користувачі</h4>
+                    <div class="password-list">
+                        <div class="password-item">
+                            <span>proc_admin</span>
+                            <span>GoldScale2024</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_general</span>
+                            <span>JusticeLord777</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_deputy</span>
+                            <span>LawMaster888</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_senior</span>
+                            <span>SeniorLaw555</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_dept</span>
+                            <span>DeptChief333</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_assist</span>
+                            <span>LegalAid111</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_criminal</span>
+                            <span>CrimeLaw222</span>
+                        </div>
+                        <div class="password-item">
+                            <span>proc_super</span>
+                            <span>Supervisor999</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Системні налаштування -->
+            <div id="admin-system" class="admin-section" style="display: none;">
+                <h3>⚙️ Системні налаштування</h3>
+                <div class="form-group">
+                    <label>Назва системи</label>
+                    <input type="text" class="form-control" value="ЄРДР PRO" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Версія системи</label>
+                    <input type="text" class="form-control" value="2.4.1" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Статус системи</label>
+                    <div>
+                        <span class="badge badge-success">Активна</span>
+                        <span style="margin-left: 10px; color: #94a3b8;">Всі служби працюють штатно</span>
+                    </div>
+                </div>
+                <button class="btn btn-admin">Зберегти налаштування</button>
+            </div>
+
+            <!-- Логи -->
+            <div id="admin-logs" class="admin-section" style="display: none;">
+                <h3>📋 Журнал подій</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Час</th>
+                            <th>Користувач</th>
+                            <th>Подія</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024-01-15 14:30</td>
+                            <td>gunp_admin</td>
+                            <td>Вхід в систему</td>
+                            <td><span class="badge badge-success">Успішно</span></td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-15 14:25</td>
+                            <td>sbu_admin</td>
+                            <td>Перегляд справ</td>
+                            <td><span class="badge badge-success">Успішно</span></td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-15 14:20</td>
+                            <td>proc_admin</td>
+                            <td>Експорт даних</td>
+                            <td><span class="badge badge-success">Успішно</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Резервне копіювання -->
+            <div id="admin-backup" class="admin-section" style="display: none;">
+                <h3>💾 Резервне копіювання</h3>
+                <div class="stats-grid">
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #047857);">
+                        <div class="stat-number">156</div>
+                        <div>Справ в базі</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #047857);">
+                        <div class="stat-number">24</div>
+                        <div>Користувачі</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #047857);">
+                        <div class="stat-number">89</div>
+                        <div>Логів за день</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #047857);">
+                        <div class="stat-number">2.4 GB</div>
+                        <div>Розмір бази</div>
+                    </div>
+                </div>
+                <button class="btn btn-success" style="margin-right: 10px;">Створити бекап</button>
+                <button class="btn btn-primary">Відновити з бекапу</button>
+            </div>
+        </div>
+
         <!-- Login Modal -->
         <div class="modal" id="loginModal">
             <div class="modal-content">
@@ -582,6 +877,9 @@
                 { username: "proc_assist", password: "LegalAid111", name: "Іванова Л.М.", position: "Помічник прокурора" },
                 { username: "proc_criminal", password: "CrimeLaw222", name: "Семенюк В.І.", position: "Прокурор-криміналіст" },
                 { username: "proc_super", password: "Supervisor999", name: "Козак Р.С.", position: "Спеціаліст з нагляду" }
+            ],
+            admin: [
+                { username: "system_admin", password: "MasterControl2024", name: "Системний адміністратор", position: "Головний адміністратор" }
             ]
         };
 
@@ -622,7 +920,8 @@
             const agencies = {
                 gunp: { name: "ГУНП", fullName: "Головне управління Національної поліції", color: "#1e40af", icon: "👮‍♂️" },
                 sbu: { name: "СБУ", fullName: "Служба Безпеки України", color: "#dc2626", icon: "🕵️‍♂️" },
-                prosecutor: { name: "Прокуратура", fullName: "Генеральна прокуратура України", color: "#7c2d12", icon: "⚖️" }
+                prosecutor: { name: "Прокуратура", fullName: "Генеральна прокуратура України", color: "#7c2d12", icon: "⚖️" },
+                admin: { name: "Адмін-панель", fullName: "Панель адміністратора системи", color: "#7e22ce", icon: "👨‍💼" }
             };
             return agencies[agency];
         }
@@ -674,6 +973,24 @@
             document.getElementById(`${currentAgency}-panel`).style.display = 'block';
         }
 
+        function showAdminTab(tabName) {
+            // Приховуємо всі вкладки
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Видаляємо активний клас з усіх кнопок
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показуємо обрану вкладку
+            document.getElementById(`admin-${tabName}`).style.display = 'block';
+            
+            // Додаємо активний клас до поточної кнопки
+            event.target.classList.add('active');
+        }
+
         function logout() {
             currentAgency = null;
             currentUser = null;
@@ -690,7 +1007,7 @@
         });
 
         console.log('🛡️ ЄРДР PRO System Initialized');
-        console.log('24 unique passwords loaded successfully');
+        console.log('24 unique passwords + admin panel loaded successfully');
     </script>
 </body>
 </html>

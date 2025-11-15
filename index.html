@@ -387,6 +387,14 @@
             margin-bottom: 20px;
         }
 
+        .prosecutor-confirm {
+            background: rgba(124, 45, 18, 0.3);
+            border: 1px solid var(--prosecutor-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
         @media (max-width: 768px) {
             .agency-selector {
                 grid-template-columns: 1fr;
@@ -406,6 +414,12 @@
             
             .case-actions {
                 flex-direction: column;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
             }
         }
     </style>
@@ -1001,6 +1015,40 @@
                 </div>
             </div>
         </div>
+
+        <!-- Prosecutor Confirm Modal -->
+        <div class="modal" id="prosecutorConfirmModal">
+            <div class="modal-content">
+                <h2 style="margin-bottom: 20px; text-align: center;">⚖️ Підтвердження видалення</h2>
+                
+                <div class="prosecutor-confirm">
+                    <h4>🔐 Підтвердження прокурора</h4>
+                    <p style="margin-bottom: 15px; color: #cbd5e1;">Для видалення справи необхідно підтвердження прокурора</p>
+                    
+                    <div class="form-group">
+                        <label>👤 Логін прокурора</label>
+                        <input type="text" class="form-control" id="prosecutorUsername" placeholder="Введіть логін прокурора">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🔑 Пароль прокурора</label>
+                        <div class="password-field">
+                            <input type="password" class="form-control" id="prosecutorPassword" placeholder="Введіть пароль прокурора">
+                            <button type="button" class="toggle-password" onclick="toggleProsecutorPassword()">👁️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="caseToDeleteInfo" style="background: rgba(220, 38, 38, 0.2); border-radius: 10px; padding: 15px; margin: 15px 0;">
+                    <!-- Інформація про справу буде тут -->
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn" onclick="closeProsecutorConfirmModal()" style="flex: 1;">Скасувати</button>
+                    <button class="btn btn-danger" onclick="confirmCaseDeletion()" style="flex: 2;">🗑️ Підтвердити видалення</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1055,6 +1103,7 @@
             sbu: 1,
             prosecutor: 1
         };
+        let caseToDelete = null;
 
         function selectAgency(agency) {
             currentAgency = agency;
@@ -1126,6 +1175,19 @@
         function togglePassword() {
             const passwordInput = document.getElementById('loginPassword');
             const toggleButton = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = '🔒';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.textContent = '👁️';
+            }
+        }
+
+        function toggleProsecutorPassword() {
+            const passwordInput = document.getElementById('prosecutorPassword');
+            const toggleButton = document.querySelectorAll('.toggle-password')[1];
             
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
@@ -1235,7 +1297,7 @@
                     <td class="case-actions">
                         <button class="btn btn-primary" onclick="viewCase(${caseItem.id})">👁️ Перегляд</button>
                         ${currentAgency === 'prosecutor' ? 
-                          `<button class="btn btn-danger" onclick="deleteCase(${caseItem.id})">🗑️ Видалити</button>` : 
+                          `<button class="btn btn-danger" onclick="requestCaseDeletion(${caseItem.id})">🗑️ Видалити</button>` : 
                           `<button class="btn" disabled title="Тільки прокуратура може видаляти справи">🗑️ Видалити</button>`
                         }
                     </td>
@@ -1279,17 +1341,63 @@
             }
         }
 
-        function deleteCase(caseId) {
+        function requestCaseDeletion(caseId) {
             if (currentAgency !== 'prosecutor') {
                 alert('Помилка доступу! Тільки прокуратура може видаляти справи.');
                 return;
             }
             
-            if (confirm('Ви впевнені, що хочете видалити цю справу? Цю дію неможливо скасувати.')) {
-                CASES_DATABASE[currentAgency] = CASES_DATABASE[currentAgency].filter(c => c.id !== caseId);
-                loadCasesForAgency();
-                alert('Справу успішно видалено!');
+            const caseItem = CASES_DATABASE[currentAgency].find(c => c.id === caseId);
+            if (!caseItem) return;
+            
+            caseToDelete = caseId;
+            
+            // Заповнюємо інформацію про справу
+            document.getElementById('caseToDeleteInfo').innerHTML = `
+                <h4>📋 Інформація про справу:</h4>
+                <p><strong>Номер:</strong> ${caseItem.number}</p>
+                <p><strong>Назва:</strong> ${caseItem.title}</p>
+                <p><strong>Створена:</strong> ${caseItem.createdDate}</p>
+                <p><strong>Відповідальний:</strong> ${caseItem.responsible}</p>
+            `;
+            
+            // Очищаємо поля підтвердження
+            document.getElementById('prosecutorUsername').value = '';
+            document.getElementById('prosecutorPassword').value = '';
+            
+            document.getElementById('prosecutorConfirmModal').style.display = 'flex';
+        }
+
+        function closeProsecutorConfirmModal() {
+            document.getElementById('prosecutorConfirmModal').style.display = 'none';
+            caseToDelete = null;
+        }
+
+        function confirmCaseDeletion() {
+            const username = document.getElementById('prosecutorUsername').value;
+            const password = document.getElementById('prosecutorPassword').value;
+            
+            if (!username || !password) {
+                alert('Будь ласка, введіть логін та пароль прокурора для підтвердження!');
+                return;
             }
+            
+            // Перевіряємо чи це дійсно прокурор
+            const prosecutor = USERS.prosecutor.find(u => 
+                u.username === username && u.password === password
+            );
+            
+            if (!prosecutor) {
+                alert('Невірний логін або пароль прокурора! Видалення скасовано.');
+                return;
+            }
+            
+            // Видаляємо справу
+            CASES_DATABASE[currentAgency] = CASES_DATABASE[currentAgency].filter(c => c.id !== caseToDelete);
+            loadCasesForAgency();
+            closeProsecutorConfirmModal();
+            
+            alert(`Справу успішно видалено!\nПідтверджено прокурором: ${prosecutor.name}`);
         }
 
         // Додаємо обробник для клавіші Enter
